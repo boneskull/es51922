@@ -1,7 +1,8 @@
-import {read} from '../src/index.js';
+import {fromES51922} from '../src/index.js';
+import {take} from 'rxjs/operators';
 
-describe('read', function() {
+describe('fromES51922', function() {
   it('should output stuff', function() {
-    read();
+    fromES51922().pipe(take(1));
   });
 });

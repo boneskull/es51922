@@ -1,0 +1,212 @@
+meta:
+  id: es51922
+  title: Cyrustek ES51922 Data Protocol
+  file-extension: es51922
+
+seq:
+  - id: raw_range
+    type: u1
+  - id: raw_digit0
+    type: u1
+  - id: raw_digit1
+    type: u1
+  - id: raw_digit2
+    type: u1
+  - id: raw_digit3
+    type: u1
+  - id: raw_digit4
+    type: u1
+  - id: raw_func
+    type: u1
+  - id: raw_status
+    type: u1
+  - id: raw_option0
+    type: u1
+  - id: raw_option1
+    type: u1
+  - id: raw_option2
+    type: u1
+  - id: raw_option3
+    type: u1
+  - id: tail
+    contents: [0xd, 0xa]
+
+instances:
+  status:
+    type: status
+  options:
+    type: options
+  digits:
+    pos: 1
+    size: 5
+    process: xor(0x30)
+  range:
+    type:
+      switch-on: (raw_range ^ 0x30) | ((raw_func ^ 0x30) << 4)
+      cases:
+        0x00: base_range('A', 1.0, 3, 'current')
+        0x10: base_range('V', 1.0, 4, 'diode')
+        0x20: base_range('Hz', 1.0, 2, 'frequency')
+        0x21: base_range('Hz', 1.0, 1, 'frequency')
+        0x22: base_range('kHz', 1000.0, 3, 'frequency')
+        0x23: base_range('kHz', 1000.0, 2, 'frequency')
+        0x24: base_range('MHz', 1000000.0, 4, 'frequency')
+        0x25: base_range('MHz', 1000000.0, 3, 'frequency')
+        0x26: base_range('MHz', 1000000.0, 2, 'frequency')
+        0x30: base_range('Ω', 1.0, 2, 'resistance')
+        0x31: base_range('kΩ', 1000.0, 4, 'resistance')
+        0x32: base_range('kΩ', 1000.0, 3, 'resistance')
+        0x33: base_range('kΩ', 1000.0, 2, 'resistance')
+        0x34: base_range('MΩ', 1000000.0, 4, 'resistance')
+        0x35: base_range('MΩ', 1000000.0, 3, 'resistance')
+        0x36: base_range('MΩ', 1000000.0, 2, 'resistance')
+        0x50: base_range('Ω', 1.0, 2, 'continuity')
+        0x60: base_range('nF', 1e-9, 3, 'capacitance')
+        0x61: base_range('nF', 1e-9, 2, 'capacitance')
+        0x62: base_range('µF', 1e-6, 4, 'capacitance')
+        0x63: base_range('µF', 1e-6, 3, 'capacitance')
+        0x64: base_range('µF', 1e-6, 2, 'capacitance')
+        0x65: base_range('mF', 1e-3, 4, 'capacitance')
+        0x66: base_range('mF', 1e-3, 3, 'capacitance')
+        0x67: base_range('mF', 1e-3, 2, 'capacitance')
+        0x90: base_range('A', 1.0, 4, 'current')
+        0x91: base_range('A', 1.0, 3, 'current')
+        0x92: base_range('A', 1.0, 2, 'current')
+        0x93: base_range('A', 1.0, 1, 'current')
+        0x94: base_range('A', 1.0, 0, 'current')
+        0xb0: base_range('V', 1.0, 4, 'voltage')
+        0xb1: base_range('V', 1.0, 3, 'voltage')
+        0xb2: base_range('V', 1.0, 2, 'voltage')
+        0xb3: base_range('V', 1.0, 1, 'voltage')
+        0xb4: base_range('mV', 1e-3, 2, 'voltage')
+        0xd0: base_range('µA', 1e-6, 2, 'current')
+        0xd1: base_range('µA', 1e-6, 1, 'current')
+        0xe0: base_adp_range(adp_ranges::adp0.to_i)
+        0xe1: base_adp_range(adp_ranges::adp1.to_i)
+        0xe2: base_adp_range(adp_ranges::adp2.to_i)
+        0xe3: base_adp_range(adp_ranges::adp3.to_i)
+        0xe4: base_adp_range(adp_ranges::adp4.to_i)
+        0xf0: base_range('mA', 1e-3, 3, 'current')
+        0xf1: base_range('mA', 1e-3, 2, 'current')
+  func:
+    value: raw_func ^ 0x30
+    enum: functions
+  precision:
+    value: >-
+      range.as<base_range>.precision == 0 ? 1.0 :
+      range.as<base_range>.precision == 1 ? 0.1 :
+      range.as<base_range>.precision == 2 ? 0.01 :
+      range.as<base_range>.precision == 3 ? 0.001 : 0.0001
+  value:
+    value: >-
+      (
+        ((raw_digit0 ^ 0x30) * 10000) +
+        ((raw_digit1 ^ 0x30) * 1000) +
+        ((raw_digit2 ^ 0x30) * 100) +
+        ((raw_digit3 ^ 0x30) * 10) +
+        (raw_digit4 ^ 0x30)
+      ) * range.as<base_range>.multiplier * precision * status.sign_multiplier
+    if: 'func != functions::temperature and func != functions::adp'
+enums:
+  adp_ranges:
+    0: adp0
+    1: adp1
+    2: adp2
+    3: adp3
+    4: adp4
+  functions:
+    0: current_22a
+    1: diode
+    2: freq
+    3: resistance
+    4: temperature
+    5: continuity
+    6: capacitance
+    9: current_manual
+    11: voltage
+    13: current_microamp
+    14: adp
+    15: current_milliamp
+
+types:
+  base_range:
+    params:
+      - id: unit
+        type: str
+        encoding: UTF-8
+      - id: multiplier
+        type: f4
+      - id: precision
+        type: u1
+      - id: mode
+        type: str
+        encoding: UTF-8
+    meta:
+      xref:
+        unit: unit
+        precision: precision
+        multiplier: multiplier
+        mode: mode
+  base_func:
+    params:
+      - id: base_unit
+        type: str
+        encoding: UTF-8
+      - id: base_range
+        type: str
+        encoding: UTF-8
+      - id: mode
+        type: str
+        encoding: UTF-8
+    meta:
+      xref:
+        base_unit: base_unit
+        base_range: base_range
+        mode: mode
+  base_adp_range:
+    params:
+      - id: adp_mode
+        type: u1
+        enum: adp_ranges
+  status:
+    instances:
+      overload:
+        value: '_parent.raw_status ^ 0x30 & 0 == 1'
+      battery_low:
+        value: '_parent.raw_status ^ 0x30 & 1 == 1'
+      sign_multiplier:
+        value: '_parent.raw_status ^ 0x30 & 2 == 1 ? -1 : 1'
+      degrees:
+        value: "_parent.raw_status ^ 0x30 & 3 == 1 ? 'C' : 'F'"
+      underload:
+        value: '_parent.raw_option1 ^ 0x30 & 2 == 1'
+      operation:
+        value: "overload ? 'overload' : underload ? 'underload' : 'normal'"
+  options:
+    instances:
+      current_value:
+        value: '_parent.raw_option0 ^ 0x30 & 0 == 1'
+      relative:
+        value: '_parent.raw_option0 ^ 0x30 & 1 == 1'
+      minimum:
+        value: '_parent.raw_option0 ^ 0x30 & 2 == 1'
+      maximum:
+        value: '_parent.raw_option0 ^ 0x30 & 3 == 1'
+      peak_minimum:
+        value: '_parent.raw_option1 ^ 0x30 & 1 == 1'
+      peak_maximum:
+        value: '_parent.raw_option1 ^ 0x30 & 2 == 1'
+      vahz:
+        value: '_parent.raw_option2 ^ 0x30 & 0 == 1'
+      auto:
+        value: '_parent.raw_option2 ^ 0x30 & 1 == 1'
+      ac_mode:
+        value: "_parent.raw_option2 ^ 0x30 & 2 == 1 ? 'current' : 'voltage'"
+      dc_mode:
+        value: "_parent.raw_option2 ^ 0x30 & 3 == 1 ? 'current' : 'voltage'"
+      lpf:
+        value: '_parent.raw_option3 ^ 0x30 & 0 == 1'
+      hold:
+        value: '_parent.raw_option3 ^ 0x30 & 1 == 1'
+      vbar:
+        value: '_parent.raw_option3 ^ 0x30 & 2 == 1'
