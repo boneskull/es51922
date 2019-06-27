@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "description": "Streaming Cyrustek ES51922 DMM data protocol implementation over serial",
-  "main": "src/index.js",
+  "main": "index.js",
+  "module": "src/index.js",
   "scripts": {
     "posttest": "markdownlint --ignore node_modules . && eslint .",
     "test": "nyc mocha \"test/**/*.spec.js\"",
