@@ -105,6 +105,9 @@
   },
   "nyc": {
     "all": true,
-    "include": "src"
+    "include": [
+      "src",
+      "vendor"
+    ]
   }
 }
