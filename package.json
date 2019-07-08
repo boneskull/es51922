@@ -35,9 +35,9 @@
   "main": "dist/es51922.js",
   "module": "dist/es51922.mjs",
   "scripts": {
+    "build": "rollup -c",
     "compile-posix": "kaitai-struct-compiler ./src/es51922.ksy.yaml -t javascript && mv Es51922.js ./vendor/es51922.js",
     "release": "standard-version",
-    "build": "rollup -c",
     "test": "nyc mocha \"test/**/*.spec.js\"",
     "posttest": "markdownlint --ignore node_modules . && eslint ."
   },
