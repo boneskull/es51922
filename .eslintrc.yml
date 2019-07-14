@@ -17,4 +17,4 @@ overrides:
     globals:
       expect: false
       sinon: false
-      proxyquire: false
+      rewiremock: false
