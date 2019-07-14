@@ -36,7 +36,7 @@ Example output:
 
 ### Node.js Stream API
 
-This is equivalent to the above:
+This is _equivalent_ to the above:
 
 ```js
 import {readES51922Stream} from 'es51922';
@@ -56,7 +56,7 @@ Define the `ES51922_PORT` environment variable to avoid needing to pass it direc
 
 ## Development
 
-`src/es51922.ksy.yaml` contains a [Kaitai Struct](https://kaitai.io/) format description of the data protocol. The Kaitai Struct compiler generates the parser, which lives in `vendor/es51922.js`.
+`src/es51922.ksy.yml` contains a [Kaitai Struct](https://kaitai.io/) format description of the data protocol. The Kaitai Struct compiler generates the parser, which lives in `vendor/es51922.js`.
 
 The _reference_ Kaitai Struct compiler is implemented in Scala, so it would be a hassle to compile as part of a build step. The Kaitai Struct team publishes a [pure-JS implementation](https://npm.im/kaitai-struct-compiler) to npm, but it has not kept pace with the Scala implementation; it fails to parse our format description file.
 

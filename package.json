@@ -37,7 +37,7 @@
   "scripts": {
     "build": "rollup -c",
     "clean": "git clean -fdx dist",
-    "compile-posix": "kaitai-struct-compiler ./src/es51922.ksy.yaml -t javascript && mv Es51922.js ./vendor/es51922.js",
+    "compile-posix": "kaitai-struct-compiler ./src/es51922.ksy.yml -t javascript && mv Es51922.js ./vendor/es51922.js",
     "dev": "rollup -c -w",
     "prepublishOnly": "npm run clean && npm run build",
     "release": "standard-version",
