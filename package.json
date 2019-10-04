@@ -1,6 +1,6 @@
 {
   "name": "es51922",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Streaming Cyrustek ES51922 DMM data protocol implementation over serial",
   "keywords": [
     "ac",

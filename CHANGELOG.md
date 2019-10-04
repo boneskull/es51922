@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1](https://github.com/boneskull/es51922/compare/v0.1.0...v0.1.1) (2019-10-04)
+
+### Bug Fixes
+
+- **security:** upgrades for npm audit ([8b5da76](https://github.com/boneskull/es51922/commit/8b5da76))
+
 ## 0.1.0 (2019-07-14)
 
 ### Bug Fixes
