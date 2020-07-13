@@ -100,7 +100,7 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-subpath-externals": "^3.0.0",
     "sinon": "^7.3.2",
-    "standard-version": "^6.0.1",
+    "standard-version": "^8.0.1",
     "unexpected": "^11.7.0",
     "unexpected-rxjs": "^0.2.3",
     "unexpected-sinon": "^10.11.2"
